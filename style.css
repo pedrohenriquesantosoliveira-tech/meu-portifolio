@@ -11,21 +11,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const introText = 'Desenvolvedor Front-End • UCSAL Salvador';
   let charIndex = 0;
 
+  // Inicia barra de carregamento
   setTimeout(() => {
     progressBar.style.width = '100%';
   }, 150);
 
+  // Efeito máquina de escrever
   function typeWriter() {
     if (charIndex < introText.length) {
       typewriterEl.textContent += introText.charAt(charIndex);
       charIndex++;
       setTimeout(typeWriter, 35);
     } else {
+      // Libera o botão de entrada assim que terminar de digitar
       enterBtn.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
     }
   }
   setTimeout(typeWriter, 300);
 
+  // Ação ao clicar em "Acessar Portfólio"
   enterBtn.addEventListener('click', () => {
     splashScreen.style.opacity = '0';
     splashScreen.style.transform = 'scale(1.08)';
@@ -34,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       splashScreen.style.display = 'none';
       portfolioWrapper.classList.remove('opacity-0', 'scale-95');
-      triggerScrollReveal();
+      triggerScrollReveal(); // Ativa animações iniciais
     }, 800);
   });
 
@@ -99,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       particles[i].update();
       particles[i].draw();
 
+      // Conecta partículas próximas entre si
       for (let j = i; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
@@ -113,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
+      // Conecta partículas ao cursor do mouse
       if (mouse.x !== null) {
         const dxMouse = particles[i].x - mouse.x;
         const dyMouse = particles[i].y - mouse.y;
@@ -141,17 +147,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = e.clientX - rect.left; // Posição X dentro do card
+      const y = e.clientY - rect.top;  // Posição Y dentro do card
 
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 
+      // Calcula rotação 3D proporcional (máx 12 graus)
       const rotateX = ((y - centerY) / centerY) * -12;
       const rotateY = ((x - centerX) / centerX) * 12;
 
       card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
 
+      // Atualiza brilho radial acompanhando o cursor
       if (glare) {
         glare.style.opacity = '1';
         glare.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.18) 0%, transparent 70%)`;
@@ -167,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* =================================================================
-     4. CARROSSEL INTERATIVO DE PROJETOS
+     4. CARROSSEL INTERATIVO DE PROJETOS (COM BARRA DE PROGRESSO)
      ================================================================= */
   const track = document.getElementById('carousel-track');
   const prevBtn = document.getElementById('carousel-prev');
@@ -180,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const slideDuration = 6000;
   let slideTimer;
 
+  // Cria indicadores inferiores
   slides.forEach((_, index) => {
     const dot = document.createElement('button');
     dot.className = `h-2 rounded-full transition-all duration-300 ${index === 0 ? 'w-8 bg-blue-500' : 'w-2 bg-slate-700 hover:bg-slate-500'}`;
@@ -200,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : 'h-2 w-2 rounded-full bg-slate-700 hover:bg-slate-500 transition-all duration-300';
     });
 
+    // Reinicia animação da barra de progresso
     carouselProgress.style.transition = 'none';
     carouselProgress.style.width = '0%';
     setTimeout(() => {
@@ -230,6 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resetCarouselTimer();
   });
 
+  // Inicia carrossel
   updateCarouselUI();
   resetCarouselTimer();
 
@@ -266,54 +277,5 @@ document.addEventListener('DOMContentLoaded', () => {
       emailLabel.textContent = email;
       copyEmailBtn.classList.remove('border-emerald-500', 'text-emerald-400');
     }, 2500);
-  });
-
-  /* =================================================================
-     7. ENVIO ASSÍNCRONO DO FORMULÁRIO DE E-MAIL (FETCH API / AJAX)
-     ================================================================= */
-  const contactForm = document.getElementById('contact-form');
-  const submitBtn = document.getElementById('submit-form-btn');
-  const submitBtnText = document.getElementById('submit-btn-text');
-  const submitBtnIcon = document.getElementById('submit-btn-icon');
-  const formStatus = document.getElementById('form-status');
-
-  contactForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Evita o recarregamento da página
-
-    // Estado de carregamento no botão
-    submitBtn.disabled = true;
-    submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
-    submitBtnText.textContent = 'ENVIANDO MENSAGEM...';
-    submitBtnIcon.className = 'fa-solid fa-circle-notch fa-spin';
-    formStatus.classList.add('hidden');
-
-    const formData = new FormData(contactForm);
-
-    try {
-      const response = await fetch(contactForm.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        formStatus.textContent = '✓ Mensagem enviada com sucesso! Responderei em breve no seu e-mail.';
-        formStatus.className = 'p-4 rounded-xl text-sm font-medium text-center border bg-emerald-500/10 border-emerald-500/30 text-emerald-400 block';
-        contactForm.reset();
-      } else {
-        throw new Error('Falha no envio');
-      }
-    } catch (error) {
-      formStatus.textContent = '⚠ Não foi possível enviar agora. Verifique sua conexão ou chame no WhatsApp.';
-      formStatus.className = 'p-4 rounded-xl text-sm font-medium text-center border bg-rose-500/10 border-rose-500/30 text-rose-400 block';
-    } finally {
-      // Restaura o botão
-      submitBtn.disabled = false;
-      submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-      submitBtnText.textContent = 'ENVIAR MENSAGEM PARA O E-MAIL';
-      submitBtnIcon.className = 'fa-solid fa-paper-plane';
-    }
   });
 });
