@@ -96,6 +96,7 @@
 
 .glass-panel:hover {
   border-color: rgba(59, 130, 246, 0.35);
+  transform: translateY(-4px);
   box-shadow: 0 20px 40px -15px rgba(37, 99, 235, 0.2);
 }
 
@@ -108,17 +109,6 @@
 .skill-box:hover {
   border-color: rgba(96, 165, 250, 0.5);
   box-shadow: 0 15px 30px -10px rgba(59, 130, 246, 0.3);
-}
-
-/* ================= ESTILO DOS CAMPOS DO FORMULÁRIO ================= */
-.form-input {
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
-}
-
-.form-input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-  background-color: rgba(15, 23, 42, 0.95);
 }
 
 /* ================= SCROLL REVEAL ================= */
